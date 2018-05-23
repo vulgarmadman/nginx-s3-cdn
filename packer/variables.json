@@ -1,0 +1,12 @@
+{
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "aws_region": "eu-west-1",
+    "ami_name": "cdn-amazon-linux",
+    "ami_description": "CDN Image to serve S3 content using Nginx",
+    "source_ami": "ami-ca0135b3",
+    "instance_type": "t2.small",
+    "ssh_username": "ec2-user",
+    "vpc_id": "",
+    "subnet_id": ""
+}

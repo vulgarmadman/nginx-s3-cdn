@@ -1,0 +1,4 @@
+terraform/.terraform
+*.txt
+*.log
+*.dbg

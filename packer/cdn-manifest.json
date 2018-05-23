@@ -1,0 +1,39 @@
+{
+    "variables": {
+        "aws_access_key": "",
+        "aws_secret_key": "",
+        "aws_region": "",
+        "ami_name": "",
+        "ami_description": "",
+        "source_ami": "",
+        "instance_type": "",
+        "ssh_username": "",
+        "vpc_id": "",
+        "subnet_id": ""
+    },
+
+    "builders": [{
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "{{user `aws_region`}}",
+        "instance_type": "{{user `instance_type`}}",
+        "ssh_username": "{{user `ssh_username`}}",
+        "source_ami": "{{user `source_ami`}}",
+        "ami_name": "{{user `ami_name`}} {{timestamp}}",
+        "ami_description": "{{user `ami_description`}}",
+        "vpc_id": "{{user `vpc_id`}}",
+        "subnet_id": "{{user `subnet_id`}}"
+    }],
+
+    "provisioners": [{
+        "type": "file",
+        "source": "files",
+        "destination": "/home/ec2-user"
+    }, {
+        "type": "shell",
+        "script": "provision.sh",
+        "remote_folder": "/home/ec2-user",
+        "execute_command": "{{.Vars}} sudo -E sh '{{ .Path }}'"
+    }]
+}
