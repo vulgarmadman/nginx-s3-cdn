@@ -97,6 +97,58 @@ resource "aws_autoscaling_group" "cdn-green-asg" {
         propagate_at_launch = true
     }
 }
+resource "aws_autoscaling_policy" "high-cpu-green" {
+    name                   = "high-cpu-green"
+    autoscaling_group_name = "${aws_autoscaling_group.cdn-green-asg.name}"
+    adjustment_type        = "ChangeInCapacity"
+    scaling_adjustment     = "1"
+    cooldown               = "300"
+    policy_type            = "SimpleScaling"
+}
+resource "aws_cloudwatch_metric_alarm" "high-cpu-green" {
+    alarm_name                 = "high-cpu-green"
+    alarm_description          = "high-cpu-green"
+    comparison_operator        = "GreaterThanOrEqualToThreshold"
+    evaluation_periods         = "2"
+    metric_name                = "CPUUtilization"
+    namespace                  = "AWS/EC2"
+    period                     = "60"
+    statistic                  = "Average"
+    threshold                  = "60"
+    dimensions                 = {
+        "AutoScalingGroupName" = "${aws_autoscaling_group.cdn-green-asg.name}"
+    }
+    actions_enabled            = true
+    alarm_actions              = [
+        "${aws_autoscaling_policy.high-cpu-green.arn}"
+    ]
+}
+resource "aws_autoscaling_policy" "low-cpu-green" {
+    name                   = "low-cpu-green"
+    autoscaling_group_name = "${aws_autoscaling_group.cdn-green-asg.name}"
+    adjustment_type        = "ChangeInCapacity"
+    scaling_adjustment     = "-1"
+    cooldown               = "300"
+    policy_type            = "SimpleScaling"
+}
+resource "aws_cloudwatch_metric_alarm" "low-cpu-green" {
+    alarm_name                 = "low-cpu-green"
+    alarm_description          = "low-cpu-green"
+    comparison_operator        = "LessThanOrEqualToThreshold"
+    evaluation_periods         = "2"
+    metric_name                = "CPUUtilization"
+    namespace                  = "AWS/EC2"
+    period                     = "60"
+    statistic                  = "Average"
+    threshold                  = "10"
+    dimensions                 = {
+        "AutoScalingGroupName" = "${aws_autoscaling_group.cdn-green-asg.name}"
+    }
+    actions_enabled            = true
+    alarm_actions              = [
+        "${aws_autoscaling_policy.low-cpu-green.arn}"
+    ]
+}
 # Blue
 resource "aws_autoscaling_group" "cdn-blue-asg" {
     name                 = "cdn-blue-asg"
@@ -118,6 +170,58 @@ resource "aws_autoscaling_group" "cdn-blue-asg" {
         value               = "blue"
         propagate_at_launch = true
     }
+}
+resource "aws_autoscaling_policy" "high-cpu-blue" {
+    name                   = "high-cpu-blue"
+    autoscaling_group_name = "${aws_autoscaling_group.cdn-blue-asg.name}"
+    adjustment_type        = "ChangeInCapacity"
+    scaling_adjustment     = "1"
+    cooldown               = "300"
+    policy_type            = "SimpleScaling"
+}
+resource "aws_cloudwatch_metric_alarm" "high-cpu-blue" {
+    alarm_name                 = "high-cpu-blue"
+    alarm_description          = "high-cpu-blue"
+    comparison_operator        = "GreaterThanOrEqualToThreshold"
+    evaluation_periods         = "2"
+    metric_name                = "CPUUtilization"
+    namespace                  = "AWS/EC2"
+    period                     = "120"
+    statistic                  = "Average"
+    threshold                  = "60"
+    dimensions                 = {
+        "AutoScalingGroupName" = "${aws_autoscaling_group.cdn-blue-asg.name}"
+    }
+    actions_enabled            = true
+    alarm_actions              = [
+        "${aws_autoscaling_policy.high-cpu-blue.arn}"
+    ]
+}
+resource "aws_autoscaling_policy" "low-cpu-blue" {
+    name                   = "low-cpu-blue"
+    autoscaling_group_name = "${aws_autoscaling_group.cdn-blue-asg.name}"
+    adjustment_type        = "ChangeInCapacity"
+    scaling_adjustment     = "-1"
+    cooldown               = "300"
+    policy_type            = "SimpleScaling"
+}
+resource "aws_cloudwatch_metric_alarm" "low-cpu-blue" {
+    alarm_name                 = "low-cpu-blue"
+    alarm_description          = "low-cpu-blue"
+    comparison_operator        = "LessThanOrEqualToThreshold"
+    evaluation_periods         = "2"
+    metric_name                = "CPUUtilization"
+    namespace                  = "AWS/EC2"
+    period                     = "120"
+    statistic                  = "Average"
+    threshold                  = "10"
+    dimensions                 = {
+        "AutoScalingGroupName" = "${aws_autoscaling_group.cdn-blue-asg.name}"
+    }
+    actions_enabled            = true
+    alarm_actions              = [
+        "${aws_autoscaling_policy.low-cpu-blue.arn}"
+    ]
 }
 
 output "loadbalancer-dns" {
