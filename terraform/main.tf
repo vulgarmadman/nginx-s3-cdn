@@ -109,7 +109,7 @@ resource "aws_autoscaling_group" "cdn-blue-asg" {
         "${aws_elb.cdn-elb.name}"
     ]
     tag {
-        key                 = "name"
+        key                 = "Name"
         value               = "cdn-node"
         propagate_at_launch = true
     }
