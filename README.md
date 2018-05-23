@@ -14,7 +14,7 @@ This repository contains code to launch a simple S3 CDN/Proxy on AWS with the ab
 
 Building the image is done with Packer.  Deploying the image is done with terraform
 
-### Packer
+## Packer
 
 Packer config code lives in the **packer** directory with the main manifest being **cdn-manifest.json**
 with variables configured in the external file **variables.json**
@@ -157,7 +157,7 @@ Now apply these changes
 
 When new instances are fully in service scale down the green to 0/0/0 and re-apply terraform changes
 
-#### Destroying
+### Destroying
 
 There is no script for this - its dangerous so if you want to destroy it all, you will have to manually run
 
