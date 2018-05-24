@@ -119,6 +119,8 @@ file to match your certificate and domain.
 The current `packer/files/sites-enables/ssl-com.conf` is configured to work out of the box on port 443 with cloudflare
 with the addition of edge certificates which can be generated from your console.
 
+Nginx SSL configuration details can also be found at http://nginx.org/en/docs/http/configuring_https_servers.html
+
 ## Terraform
 
 The terraform config in this repo will deploy:
