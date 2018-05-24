@@ -3,6 +3,33 @@
 This repository contains code to launch a simple S3 CDN/Proxy on AWS with the ability to perform
 "Blue/Green" deployments
 
+This CDN is then best hidden behind a reverse proxy service like the almighty https://www.cloudflare.com
+
+SSL is also supported, but will require a few tweeks to the config which is detailed below
+
+## Details
+
+Once launched, by default the AWS ELB DNS will return the following:
+
+```
+^_^..<$> curl http://cdn-elb-0000000000.eu-west-1.elb.amazonaws.com/
+ok
+
+^_^..<$> curl http://cdn-elb-0000000000.eu-west-1.elb.amazonaws.com/nginx_status
+Active connections: 37
+server accepts handled requests
+ 69046 69046 1666393
+Reading: 0 Writing: 1 Waiting: 36
+```
+
+Now, to make use of the CDN functionality, create an S3 bucket with the url of your domain
+i.e. www.your-domain.com and create a CNAME to your ELB DNS hostname.
+
+The nginx config file `packer/files/sites-enables/com.conf` will by default forward any .co.uk, .com, .org + .net
+domains back to an S3 bucket of the same name.
+
+If you are running in **eu-west** region of AWS (as I am) it will just work.  If you are in any other region alter the location in `packer/files/sites-enables/com.conf` to match your region
+
 ## Requirements
 
 * Packer (https://www.packer.io/downloads.html)
@@ -29,6 +56,26 @@ export AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
 export AWS_DEFAULT_REGION=eu-west-1
 
 ```
+
+### Configuration
+
+The packer build can be configured via the standalone variables file `packer/variables.json`
+
+```
+aws_access_key       AWS access key id can be placed here, but see above for alternative approach
+aws_secret_key       AWS secret key can be placed here, but see above for alternative approach
+aws_region           AWS default regions
+ami_name             The name to tag the AMI
+ami_description      Description of the AMI
+source_ami           The source AMI - Amazon Linux is highly recommended
+instance_type        Instance size to spin up
+ssh_username         SSH username - usually ec2-user
+vpc_id               VPC id to launch the instance in
+subnet_id            Subnet id to launch the instance in
+enable_ssl           Enable SSL - see below for SSL details
+```
+
+### Build
 
 To build a script in the root of the directory can be run
 
@@ -62,6 +109,15 @@ eu-west-1: ami-75fbc40c
 The build has completed.  Please find your AMI details above
 ```
 
+## SSL
+
+SSL on this build is disabled by default.  To enable SSL, edit the `packer/variables.json` file and set `enable_ssl="true"`
+
+Add your private key and ssl certificate to the SSL directory and edit the `packer/files/sites-enables/ssl-com.conf`
+file to match your certificate and domain.
+
+The current `packer/files/sites-enables/ssl-com.conf` is configured to work out of the box on port 443 with cloudflare
+with the addition of edge certificates which can be generated from your console.
 
 ## Terraform
 
