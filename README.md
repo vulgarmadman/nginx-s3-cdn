@@ -128,6 +128,9 @@ The terraform config in this repo will deploy:
 * 1 ELB
 * A green and blue launch config
 * A green and blue auto scaling group
+* Policies to autoscale up/down on load
+
+
 
 ### Configuration
 
